@@ -1,0 +1,116 @@
+<!-- Page setup and title -->
+<!DOCTYPE html>
+<html lang="en">
+<head><meta http-equiv="Content-Type" content="text/html;
+charset=UTF-8">
+<title>Simulation NC</title>
+<style type="text/css">
+body{
+    font-family: "HelveticaNeue-Light", sans-serif; padding : 15px;
+}
+</style>
+
+<!-- Sourcing the cpm build -->
+<script src="../../build/artistoo.js"></script>
+<script>
+"use strict"
+
+let config = {
+
+    // Grid settings
+    ndim : 2,
+    field_size : [200, 200],
+
+    // CPM parameters and configuration
+    conf : {
+        T : 20,                                // CPM temperature
+
+        // Adhesion parameters:
+        J: [
+            [0, 0, 0],
+    			  [0, 0, 0],
+    			  [0, 0, 20]
+          ], // J00 background - background (so 0)
+        // J10 and J01 are background - cell (cell - matrix from part I)
+        // J11 cell - cell adhesion
+
+        // VolumeConstraint parameters
+        LAMBDA_V : [0, 10, 50],                // VolumeConstraint importance per cellkind
+        V : [0, 100, 200],                        // Target volume of each cellkind
+
+        // PerimeterConstraint parameters
+    		LAMBDA_P : [0, 6, 2],				// PerimeterConstraint importance per cellkind
+    		P : [0, 30, 180],					// Target perimeter of each cellkind
+
+    		// ActivityConstraint parameters
+    		LAMBDA_ACT : [0, 0, 200],			// ActivityConstraint importance per cellkind
+    		MAX_ACT : [0, 0, 80],				// Activity memory duration per cellkind
+    		ACT_MEAN : "geometric"				// Is neighborhood activity computed as a
+    		// "geometric" or "arithmetic" mean?
+    },
+
+    // Simulation setup and configuration
+    simsettings : {
+        // Cells on the grid
+        NRCELLS : [1, 3],                    // Number of cells to seed for all
+                                        // non-background cellkinds.
+
+        RUNTIME : 500,                  // Only used in node
+
+        CANVASCOLOR : "eaecef",
+        CELLCOLOR : ["7f03fc", "000000"],
+        BORDERCOL : ["FFFFFF", "FFFFFF"],
+        SHOWBORDERS : [true, true],
+        ACTCOLOR : [false, true],			// Should pixel activity values be displayed?
+        zoom : 4                        // zoom in on canvas with this factor.
+    }
+}
+
+let sim
+function initialize(){
+    let custommethods = {
+      initializeGrid : initializeGrid
+    }
+    sim = new CPM.Simulation(config, custommethods)
+    step()
+}
+
+function step(){
+    sim.step()
+    requestAnimationFrame(step)
+}
+
+function initializeGrid(){
+
+	// add the initializer if not already there
+	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
+
+	// Seed round objects
+	// for( let i = 40 ; i < this.C.extents[0] ; i += 25 ){
+	// 	for( let j = 40 ; j < this.C.extents[1] ; j += 25 ){
+	// 		this.gm.seedCellAt(1, [i,j])
+	// 	}
+	// }
+
+  // Seed moving objects
+  for( let i = 0 ; i < this.C.extents[0] ; i += 15 ){
+		for( let j = 0 ; j < this.C.extents[1] ; j += 15 ){
+			this.gm.seedCellAt(2, [i,j])
+		}
+	}
+
+
+
+}
+
+
+</script>
+</head>
+<body onload="initialize()">
+<h1>Simulation test NC</h1>
+<p>
+Very pretty.
+</p>
+</body>
+</html>
+
