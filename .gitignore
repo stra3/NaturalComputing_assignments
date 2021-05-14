@@ -1,5 +1,6 @@
 *.txt
 project/data/
+.vscode/
 
 __pycache__/
 *.py[cod]
