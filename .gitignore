@@ -1,5 +1,6 @@
 *.txt
 project/data/
+project/small_data/
 .vscode/
 
 __pycache__/
